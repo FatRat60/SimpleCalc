@@ -1,31 +1,22 @@
+#include <QtWidgets>
 #include "gui.h"
-#include <QApplication>
-#include <QWidget>
-#include <QPushButton>
-#include <QVBoxLayout>
 
-int qtWindow(int argc, char *argv[]) {
-    QApplication app(argc, argv);
+MainWidget::MainWidget(QWidget *parent) :
+    QWidget(parent)
+{
+    button_ = new QPushButton(tr("Push Me!"));
+    textBrowser_ = new QTextBrowser();
 
-    // create window
-    QWidget window;
-    window.setWindowTitle("Hello Qt");
+    QGridLayout *mainLayout = new QGridLayout;
+    mainLayout->addWidget(button_, 0, 0);
+    mainLayout->addWidget(textBrowser_, 1, 0);
+    setLayout(mainLayout);
+    setWindowTitle(tr("Connecting buttons to processes"));
+}
 
-    // Create a button
-    QPushButton button("Click Me!", &window);
-    button.setToolTip("Click this button");
-
-    // Connect a slot to the button's clicked signal
-    QObject::connect(&button, &QPushButton::clicked, &app, &QApplication::quit);
-
-    // Set up the layout
-    QVBoxLayout layout(&window);
-    layout.addWidget(&button);
-    window.setLayout(&layout);
-
-    // Show the window
-    window.show();
-
-    // Run the app event loop
-    return app.exec();
+// Destructor
+MainWidget::~MainWidget()
+{
+    delete button_;
+    delete textBrowser_;
 }

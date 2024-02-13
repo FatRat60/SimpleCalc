@@ -1,7 +1,11 @@
 #include "gui.h"
-#include <iostream>
+#include <QtWidgets>
 
 int main(int argc, char *argv[]) {
-    std::cout << "Beginning" << std::endl;
-    return qtWindow(argc, argv);
+    QApplication app(argc, argv);
+
+    MainWidget w;
+    w.show();
+
+    return app.exec();
 }

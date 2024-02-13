@@ -11,4 +11,4 @@ HEADERS += \
     src/gui.h
 
 # Specify the Qt mod ur proj needs
-QT += core gui widgets
+QT += widgets
