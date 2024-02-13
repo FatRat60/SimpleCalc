@@ -3,4 +3,6 @@
 
 #include <QApplication>
 
+int qtWindow(int argc, char *argv[]);
+
 #endif

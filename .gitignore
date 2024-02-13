@@ -1,2 +1,9 @@
 .vscode
 build
+TODO
+.qmake.stash
+Makefile
+Makefile.Debug
+Makefile.Release
+debug
+release
