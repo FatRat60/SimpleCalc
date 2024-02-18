@@ -5,8 +5,8 @@
 #include <QProcess>
 
 class QPushButton;
-class QTextBrowser;
 class QLabel;
+class QGridLayout;
 
 class MainWidget : public QWidget
 {
@@ -18,8 +18,7 @@ public:
 
 private slots:
     void onButtonPressed(std::string input);
-    void onButtonReleased();
-    void onCaptureProcessOutput();
+    void calculateResult();
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
@@ -28,10 +27,10 @@ private:
     QLabel* display;
     QPushButton* numButtons[10]; // digit keys 0-9
     QPushButton* opButtons[7]; // +, -, ÷, *, =, +/-, .
-    QProcess pCalculate; // process will handle calculations, probably
-    QPushButton* button_;
-    QTextBrowser* textBrowser_;
-    QProcess process_; // process the button fires off
+    QGridLayout* topLayout;
+    void numberButtonsInit();
+    void opButtonsInit(QGridLayout* layout);
+    void displayInit();
 };
 
 #endif
