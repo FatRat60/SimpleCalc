@@ -10,5 +10,8 @@ SOURCES += \
 HEADERS += \
     src/gui.h
 
+# Specifiy resources
+RESOURCES += resource.qrc
+
 # Specify the Qt mod ur proj needs
 QT += widgets
