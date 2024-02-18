@@ -9,8 +9,16 @@ MainWidget::MainWidget(QWidget *parent) :
     // Button grid
     QGridLayout *numberLayout = new QGridLayout;
 
+    // Load custom font
+    int fontid = QFontDatabase::addApplicationFont(":/fonts/resources/DS-DIGI.TTF");
+    QStringList fontFamilies = QFontDatabase::applicationFontFamilies(fontid);
+
     // initialize display w/ grid
-    display = new QLCDNumber();
+    display = new QLabel();
+    QFont digitalFont(fontFamilies.at(0));
+    display->setFont(digitalFont);
+    display->setText("TEST TEST!");
+    display->setAlignment(Qt::AlignCenter);
     topLayout->addWidget(display, 0, 0);
 
     // initialize all buttons
@@ -92,4 +100,21 @@ void MainWidget::onCaptureProcessOutput()
     QProcess* process = qobject_cast<QProcess*>(sender());
     if (process)
         textBrowser_->append(process->readAllStandardOutput());
+}
+
+void MainWidget::onButtonPressed(int input)
+{
+    display->setText(tr(std::to_string(input).c_str()));
+}
+
+void MainWidget::resizeEvent(QResizeEvent *event) 
+{
+    int newSize = width() * 0.05;
+
+    // update size
+    QFont font = display->font();
+    font.setPointSize(newSize);
+    display->setFont(font);
+
+    QWidget::resizeEvent(event);
 }

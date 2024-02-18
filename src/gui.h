@@ -6,7 +6,7 @@
 
 class QPushButton;
 class QTextBrowser;
-class QLCDNumber;
+class QLabel;
 
 class MainWidget : public QWidget
 {
@@ -17,11 +17,15 @@ public:
     ~MainWidget();
 
 private slots:
+    void onButtonPressed(int input);
     void onButtonReleased();
     void onCaptureProcessOutput();
 
+protected:
+    void resizeEvent(QResizeEvent *event) override;
+
 private:
-    QLCDNumber* display;
+    QLabel* display;
     QPushButton* numButtons[10]; // digit keys 0-9
     QPushButton* opButtons[7]; // +, -, ÷, *, =, +/-, .
     QProcess pCalculate; // process will handle calculations, probably
