@@ -85,6 +85,20 @@ void MainWidget::opButtonsInit(QGridLayout* layout)
     layout->addWidget(opButtons[1], 1, 3);
     layout->addWidget(opButtons[2], 2, 3);
     layout->addWidget(opButtons[3], 3, 3);
+    connect(opButtons[0], QPushButton::pressed, this, [=]() {
+        onArithOpPressed(0);
+    });
+    connect(opButtons[1], QPushButton::pressed, this, [=]() {
+        onArithOpPressed(1);
+    });
+    connect(opButtons[2], QPushButton::pressed, this, [=]() {
+        onArithOpPressed(2);
+    });
+    connect(opButtons[3], QPushButton::pressed, this, [=]() {
+        onArithOpPressed(3);
+    });
+
+    currentOp = nullptr;
 }
 
 // initialize the display
@@ -112,9 +126,27 @@ void MainWidget::onButtonPressed(std::string input)
     display->setText(currentText + QString::fromStdString(input));
 }
 
+void MainWidget::onArithOpPressed(int index)
+{
+    QPushButton* newOp = opButtons[index];
+    // return current button to normal
+    if (currentOp)
+    {
+        currentOp->setStyleSheet("");
+    }
+    // proceed to change new appearance
+    newOp->setStyleSheet(
+        "QPushButton:pressed {"
+        "    background-color: rgb(0, 0, 255);"
+        "    border-style: inset;"
+        "}"
+    );
+    currentOp = newOp;
+}
+
 void MainWidget::resizeEvent(QResizeEvent *event) 
 {
-    int newSize = width() * 0.05;
+    int newSize = height() * 0.05;
 
     // update size
     QFont font = display->font();

@@ -18,6 +18,7 @@ public:
 
 private slots:
     void onButtonPressed(std::string input);
+    void onArithOpPressed(int index);
     void calculateResult();
 
 protected:
@@ -28,6 +29,7 @@ private:
     QPushButton* numButtons[10]; // digit keys 0-9
     QPushButton* opButtons[7]; // +, -, ÷, *, =, +/-, .
     QGridLayout* topLayout;
+    QPushButton* currentOp;
     void numberButtonsInit();
     void opButtonsInit(QGridLayout* layout);
     void displayInit();
