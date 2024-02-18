@@ -17,7 +17,7 @@ public:
     ~MainWidget();
 
 private slots:
-    void onButtonPressed(int input);
+    void onButtonPressed(std::string input);
     void onButtonReleased();
     void onCaptureProcessOutput();
 

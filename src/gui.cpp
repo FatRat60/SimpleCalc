@@ -17,7 +17,7 @@ MainWidget::MainWidget(QWidget *parent) :
     display = new QLabel();
     QFont digitalFont(fontFamilies.at(0));
     display->setFont(digitalFont);
-    display->setText("TEST TEST!");
+    display->setText(tr("0"));
     display->setAlignment(Qt::AlignCenter);
     topLayout->addWidget(display, 0, 0);
 
@@ -28,9 +28,13 @@ MainWidget::MainWidget(QWidget *parent) :
         for (int j = 0; j < 3; j++) {
             int adjNum = num + j;
             // create button
-            numButtons[adjNum] = new QPushButton(tr(std::to_string(adjNum).c_str()));
+            std::string numberString = std::to_string(adjNum);
+            numButtons[adjNum] = new QPushButton(tr(numberString.c_str()));
             // add to grid
             numberLayout->addWidget(numButtons[adjNum], i, j);
+            connect(numButtons[adjNum], QPushButton::pressed, this, [=]() {
+                onButtonPressed(numberString);
+            });
         }
     }
     opButtons[4] = new QPushButton(tr("+/-"));
@@ -41,6 +45,9 @@ MainWidget::MainWidget(QWidget *parent) :
     numberLayout->addWidget(numButtons[0], 3, 1);
     numberLayout->addWidget(opButtons[5], 3, 2);
     numberLayout->addWidget(opButtons[6], 4, 1);
+    connect(numButtons[0], QPushButton::pressed, this, [=]() { 
+        onButtonPressed("0"); 
+    });
 
     opButtons[0] = new QPushButton(tr("÷"));
     opButtons[1] = new QPushButton(tr("x"));
@@ -102,9 +109,13 @@ void MainWidget::onCaptureProcessOutput()
         textBrowser_->append(process->readAllStandardOutput());
 }
 
-void MainWidget::onButtonPressed(int input)
+void MainWidget::onButtonPressed(std::string input)
 {
-    display->setText(tr(std::to_string(input).c_str()));
+    QString currentText = display->text();
+    QString zero = "0";
+    if (currentText == zero)
+        currentText = "";
+    display->setText(currentText + QString::fromStdString(input));
 }
 
 void MainWidget::resizeEvent(QResizeEvent *event) 
