@@ -11,24 +11,22 @@ MainWidget::MainWidget(QWidget *parent) :
 
     numberButtonsInit();
 
+    currentOpIndex = -1;
+    arg1 = 0;
+    state = true;
+
     setLayout(topLayout);
     setWindowTitle(tr("Simple Calculator"));
-
-    // connect button
-    //connect(button_, SIGNAL(released()), this, SLOT(onButtonReleased()));
-    //connect(&process_, SIGNAL(readyReadStandardOutput()), this, SLOT(onCaptureProcessOutput()));
 }
 
 // Destructor
 MainWidget::~MainWidget()
 {
-    for (int i = 0; i < 7; i++) {
+    for (int i = 0; i < 9; i++) {
         delete opButtons[i];
         delete numButtons[i];
     }
-    for (int i = 7; i < 10; i++) {
-        delete numButtons[i];
-    }
+    delete numButtons[9];
     delete display;
     delete topLayout;
 }
@@ -73,9 +71,30 @@ void MainWidget::opButtonsInit(QGridLayout* layout)
     opButtons[4] = new QPushButton(tr("+/-"));
     opButtons[5] = new QPushButton(tr("."));
     opButtons[6] = new QPushButton(tr("="));
+    opButtons[7] = new QPushButton(tr("DEL"));
+    opButtons[8] = new QPushButton(tr("C"));
     layout->addWidget(opButtons[4], 3, 0);
     layout->addWidget(opButtons[5], 3, 2);
     layout->addWidget(opButtons[6], 4, 1);
+    layout->addWidget(opButtons[7], 4, 2);
+    layout->addWidget(opButtons[8], 4, 3);
+    connect(opButtons[6], QPushButton::pressed, this, [=]() { calculateResult(); });
+    connect(opButtons[7], QPushButton::pressed, this, [=]() {
+        // Delete one char from display
+        QString txt = display->text();
+        txt.removeLast();
+        if (txt.isEmpty())
+            txt.append(tr("0"));
+        display->setText(txt);
+    });
+    connect(opButtons[8], QPushButton::pressed, this, [=]() {
+        display->setText(tr("0"));
+        if (currentOpIndex > -1){
+            QPushButton* cur = opButtons[currentOpIndex];
+            cur->setStyleSheet("");
+        }
+        currentOpIndex = -1;
+    });
 
     opButtons[0] = new QPushButton(tr("÷"));
     opButtons[1] = new QPushButton(tr("x"));
@@ -97,8 +116,6 @@ void MainWidget::opButtonsInit(QGridLayout* layout)
     connect(opButtons[3], QPushButton::pressed, this, [=]() {
         onArithOpPressed(3);
     });
-
-    currentOp = nullptr;
 }
 
 // initialize the display
@@ -130,8 +147,9 @@ void MainWidget::onArithOpPressed(int index)
 {
     QPushButton* newOp = opButtons[index];
     // return current button to normal
-    if (currentOp)
+    if (currentOpIndex > -1)
     {
+        QPushButton* currentOp = opButtons[currentOpIndex];
         currentOp->setStyleSheet("");
     }
     // proceed to change new appearance
@@ -141,7 +159,7 @@ void MainWidget::onArithOpPressed(int index)
         "    border-style: inset;"
         "}"
     );
-    currentOp = newOp;
+    currentOpIndex = index;
 }
 
 void MainWidget::resizeEvent(QResizeEvent *event) 
@@ -158,5 +176,32 @@ void MainWidget::resizeEvent(QResizeEvent *event)
 
 void MainWidget::calculateResult()
 {
-
+    // get arg 2
+    double arg2 = (display->text()).toDouble();
+    double ans;
+    // do calculation
+    switch (currentOpIndex)
+    {
+    case 0:
+        // division
+        ans = arg1 / arg2;
+        break;
+    case 1:
+        // Multiplication
+        ans = arg1 * arg2;
+        break;
+    case 2:
+        // subtraction
+        ans = arg1 - arg2;
+        break;
+    case 3:
+        // addition
+        ans = arg1 + arg2;
+        break;
+    default:
+        ans = arg2;
+    }
+    // update the display
+    display->setText(QString::number(ans));
+    arg1 = ans;
 }

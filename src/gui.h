@@ -27,9 +27,11 @@ protected:
 private:
     QLabel* display;
     QPushButton* numButtons[10]; // digit keys 0-9
-    QPushButton* opButtons[7]; // +, -, ÷, *, =, +/-, .
+    QPushButton* opButtons[9]; // +, -, ÷, *, =, +/-, .
     QGridLayout* topLayout;
-    QPushButton* currentOp;
+    int currentOpIndex;
+    bool state;
+    double arg1;
     void numberButtonsInit();
     void opButtonsInit(QGridLayout* layout);
     void displayInit();
