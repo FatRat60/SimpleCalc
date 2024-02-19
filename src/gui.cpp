@@ -13,7 +13,8 @@ MainWidget::MainWidget(QWidget *parent) :
 
     currentOpIndex = -1;
     arg1 = 0;
-    state = true;
+    doCalcOnClick = false;
+    isTyping = true;
 
     setLayout(topLayout);
     setWindowTitle(tr("Simple Calculator"));
@@ -81,11 +82,13 @@ void MainWidget::opButtonsInit(QGridLayout* layout)
     connect(opButtons[6], QPushButton::pressed, this, [=]() { calculateResult(); });
     connect(opButtons[7], QPushButton::pressed, this, [=]() {
         // Delete one char from display
-        QString txt = display->text();
-        txt.removeLast();
-        if (txt.isEmpty())
-            txt.append(tr("0"));
-        display->setText(txt);
+        if (isTyping){
+            QString txt = display->text();
+            txt.removeLast();
+            if (txt.isEmpty())
+                txt.append(tr("0"));
+            display->setText(txt);   
+        }
     });
     connect(opButtons[8], QPushButton::pressed, this, [=]() {
         display->setText(tr("0"));
@@ -138,13 +141,29 @@ void MainWidget::onButtonPressed(std::string input)
 {
     QString currentText = display->text();
     QString zero = "0";
-    if (currentText == zero)
+    if (currentText == zero || !isTyping){
+        doCalcOnClick++;
         currentText = "";
+    }
+    isTyping = true;
     display->setText(currentText + QString::fromStdString(input));
 }
 
 void MainWidget::onArithOpPressed(int index)
 {
+    // 
+    if (doCalcOnClick > 1){
+        calculateResult(); // isTyping must be false, doCalcOnClick = 1 after return
+        doCalcOnClick = 1; // or do it here (didn't wanna chance logic of calculateResult())
+    }
+
+    doCalcOnClick += isTyping;
+    // set flags
+    isTyping = false;
+    // set arg1
+    QString txt = display->text();
+    arg1 = txt.toDouble();
+    // Handle buttons visually
     QPushButton* newOp = opButtons[index];
     // return current button to normal
     if (currentOpIndex > -1)
@@ -176,6 +195,8 @@ void MainWidget::resizeEvent(QResizeEvent *event)
 
 void MainWidget::calculateResult()
 {
+    doCalcOnClick = 0;
+    isTyping = false;
     // get arg 2
     double arg2 = (display->text()).toDouble();
     double ans;
@@ -203,5 +224,5 @@ void MainWidget::calculateResult()
     }
     // update the display
     display->setText(QString::number(ans));
-    arg1 = ans;
+    arg1 = arg2;
 }

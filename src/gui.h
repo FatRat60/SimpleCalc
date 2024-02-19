@@ -30,7 +30,8 @@ private:
     QPushButton* opButtons[9]; // +, -, ÷, *, =, +/-, .
     QGridLayout* topLayout;
     int currentOpIndex;
-    bool state;
+    bool isTyping;
+    int doCalcOnClick;
     double arg1;
     void numberButtonsInit();
     void opButtonsInit(QGridLayout* layout);
