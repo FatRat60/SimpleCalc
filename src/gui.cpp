@@ -17,6 +17,7 @@ MainWidget::MainWidget(QWidget *parent) :
     isTyping = true;
     EqRepeat = false;
     lastVal = 1;
+    canAddDecimal = true;
 
     setLayout(topLayout);
     setWindowTitle(tr("Simple Calculator"));
@@ -81,6 +82,16 @@ void MainWidget::opButtonsInit(QGridLayout* layout)
     layout->addWidget(opButtons[6], 4, 1);
     layout->addWidget(opButtons[7], 4, 2);
     layout->addWidget(opButtons[8], 4, 3);
+    connect(opButtons[4], QPushButton::pressed, this, [=]() {
+        if (isTyping)
+            plusMinus();
+    });
+    connect(opButtons[5], QPushButton::pressed, this, [=]() {
+        if (canAddDecimal){
+            addDecimal();
+            canAddDecimal = false;
+        }
+    });
     connect(opButtons[6], QPushButton::pressed, this, [=]() { 
         calculateResult(); 
         EqRepeat = true;
@@ -89,6 +100,8 @@ void MainWidget::opButtonsInit(QGridLayout* layout)
         // Delete one char from display
         if (isTyping){
             QString txt = display->text();
+            if (txt.endsWith("."))
+                canAddDecimal = true;
             txt.removeLast();
             if (txt.isEmpty())
                 txt.append(tr("0"));
@@ -102,6 +115,12 @@ void MainWidget::opButtonsInit(QGridLayout* layout)
             cur->setStyleSheet("");
         }
         currentOpIndex = -1;
+        arg1 = 0;
+        doCalcOnClick = false;
+        isTyping = true;
+        EqRepeat = false;
+        lastVal = 1;
+        canAddDecimal = true;
     });
 
     opButtons[0] = new QPushButton(tr("÷"));
@@ -231,8 +250,24 @@ void MainWidget::calculateResult()
         break;
     default:
         ans = arg2;
+        isTyping = true;
     }
     // update the display
     display->setText(QString::number(ans));
     lastVal = arg2;
+}
+
+void MainWidget::plusMinus()
+{
+    QString txt = display->text();
+    double val = txt.toDouble();
+    display->setText(QString::number(val * -1));
+}
+
+void MainWidget::addDecimal()
+{
+    QString txt = display->text();
+    if (!isTyping)
+        txt = tr("0");
+    display->setText(txt + tr("."));
 }

@@ -20,6 +20,8 @@ private slots:
     void onButtonPressed(std::string input);
     void onArithOpPressed(int index);
     void calculateResult();
+    void plusMinus();
+    void addDecimal();
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
@@ -35,6 +37,7 @@ private:
     bool EqRepeat;
     double arg1;
     double lastVal;
+    bool canAddDecimal;
     void numberButtonsInit();
     void opButtonsInit(QGridLayout* layout);
     void displayInit();
