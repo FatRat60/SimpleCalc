@@ -32,7 +32,9 @@ private:
     int currentOpIndex;
     bool isTyping;
     int doCalcOnClick;
+    bool EqRepeat;
     double arg1;
+    double lastVal;
     void numberButtonsInit();
     void opButtonsInit(QGridLayout* layout);
     void displayInit();

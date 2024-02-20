@@ -15,6 +15,8 @@ MainWidget::MainWidget(QWidget *parent) :
     arg1 = 0;
     doCalcOnClick = false;
     isTyping = true;
+    EqRepeat = false;
+    lastVal = 1;
 
     setLayout(topLayout);
     setWindowTitle(tr("Simple Calculator"));
@@ -79,7 +81,10 @@ void MainWidget::opButtonsInit(QGridLayout* layout)
     layout->addWidget(opButtons[6], 4, 1);
     layout->addWidget(opButtons[7], 4, 2);
     layout->addWidget(opButtons[8], 4, 3);
-    connect(opButtons[6], QPushButton::pressed, this, [=]() { calculateResult(); });
+    connect(opButtons[6], QPushButton::pressed, this, [=]() { 
+        calculateResult(); 
+        EqRepeat = true;
+    });
     connect(opButtons[7], QPushButton::pressed, this, [=]() {
         // Delete one char from display
         if (isTyping){
@@ -151,6 +156,7 @@ void MainWidget::onButtonPressed(std::string input)
 
 void MainWidget::onArithOpPressed(int index)
 {
+    EqRepeat = false;
     // 
     if (doCalcOnClick > 1){
         calculateResult(); // isTyping must be false, doCalcOnClick = 1 after return
@@ -200,6 +206,10 @@ void MainWidget::calculateResult()
     // get arg 2
     double arg2 = (display->text()).toDouble();
     double ans;
+    if (EqRepeat) {
+        arg1 = arg2;
+        arg2 = lastVal;
+    }
     // do calculation
     switch (currentOpIndex)
     {
@@ -224,5 +234,5 @@ void MainWidget::calculateResult()
     }
     // update the display
     display->setText(QString::number(ans));
-    arg1 = arg2;
+    lastVal = arg2;
 }
