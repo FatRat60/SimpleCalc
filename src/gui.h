@@ -25,11 +25,12 @@ private slots:
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
+    void keyPressEvent(QKeyEvent* event) override;
 
 private:
     QLabel* display;
     QPushButton* numButtons[10]; // digit keys 0-9
-    QPushButton* opButtons[9]; // +, -, ÷, *, =, +/-, .
+    QPushButton* opButtons[9]; // ÷, *, -, +, +/-, ., =, DEL, C
     QGridLayout* topLayout;
     int currentOpIndex;
     bool isTyping;
